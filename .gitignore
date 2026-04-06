@@ -23,6 +23,7 @@ aws-mfa-main-guide1/aws-mfa-clear.sh
 
 # ─── Claude Code 전용 (협업자 불필요) ────────────────────────────────────────
 CLAUDE.md
+.codex
 memory/
 .claude/
 

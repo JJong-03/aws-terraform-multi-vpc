@@ -1,7 +1,7 @@
 # Phase 5 — 멀티 VPC 아키텍처 설계 문서 (구현 완료 기준)
 
 > 이 문서는 실제 apply된 코드 기준으로 작성됨.
-> 상세 아키텍처: `ARCHITECTURE.md` / 진행 상황: `memory/MEMORY.md`
+> 상세 아키텍처: `ARCHITECTURE.md` / 배포 절차: `GETTING-STARTED.md`, `AFTER-APPLY.md`
 
 ---
 
@@ -10,9 +10,9 @@
 | 항목 | 값 |
 |---|---|
 | 리전 | us-east-2 (Ohio) |
-| 도메인 | kjw-cloud.site |
+| 도메인 | your-domain.com |
 | AZ | us-east-2a / us-east-2c |
-| Key Pair | KJW-KEY-0320 |
+| Key Pair | YOUR-KEY-PAIR-NAME |
 | Terraform | >= 1.7 / AWS Provider ~> 5.0 |
 | 상태 파일 | local backend |
 
@@ -84,7 +84,7 @@ ECS Fargate (SERVICE PRIVATE) → NATGW → IGW → ECR
 | `acm` | KJW-ACM-ALB (us-east-2) + KJW-ACM-CF (us-east-1), DNS Validation |
 | `waf` | KJW-WAF-ACL, CommonRuleSet + SQLiRuleSet (REGIONAL) |
 | `cloudfront` | OAC, S3 Bucket Policy, 2 Origins, Cache Behavior |
-| `route53-zone` | kjw-cloud.site Hosted Zone |
+| `route53-zone` | your-domain.com Hosted Zone |
 | `route53-records` | Alias A: root→CF, cdn→CF, alb→ALB |
 
 ---
@@ -102,12 +102,12 @@ ECS Fargate (SERVICE PRIVATE) → NATGW → IGW → ECR
 
 ---
 
-## 6. AMI (us-east-2, 콘솔 직접 확인값)
+## 6. AMI (us-east-2, 직접 확인 후 입력)
 
 | OS | AMI ID | 모듈 |
 |---|---|---|
-| Ubuntu 24.04 LTS | ami-07062e2a343acc243 | ec2-web |
-| Ubuntu 22.04 LTS | ami-04a131f50a7b86648 | ec2-openvpn |
+| Ubuntu 24.04 LTS | ami-xxxxxxxxxxxxxxxxx | ec2-web |
+| Ubuntu 22.04 LTS | ami-xxxxxxxxxxxxxxxxx | ec2-openvpn |
 
 `ec2:DescribeImages` / `ssm:GetParameter` 모두 Admin-MFA-Enforce explicit deny.
 → `var.ami_id`에 직접 주입, `data` 블록은 `count = var.ami_id == "" ? 1 : 0` 조건부 유지.
@@ -158,7 +158,7 @@ EC2 Nginx는 EKS 외부이므로 ClusterIP/내부DNS 직접 접근 불가.
 | 파일 | 내용 |
 |---|---|
 | `ARCHITECTURE.md` | 전체 아키텍처 ASCII 다이어그램 + 상세 설명 |
+| `GETTING-STARTED.md` | 로컬 준비, 필수 변수 입력, 첫 `terraform apply` |
 | `AFTER-APPLY.md` | apply 후 수동 작업 8단계 체크리스트 |
-| `memory/MEMORY.md` | 현재 진행 상황 인덱스 (새 채팅 시작점) |
-| `terraform.tfvars` | 실제 변수값 (.gitignore 필수) |
-| `~/.claude/plans/tidy-launching-lynx.md` | 설계 계획서 v4 (구현 결정 포함) |
+| `TROUBLESHOOTING.md` | 구축 중 발생한 이슈와 해결 기록 |
+| `terraform.tfvars.example` | 환경별 변수 입력 예시 |

@@ -10,14 +10,14 @@
                        ▼                           ▼
             ┌──────────────────┐        ┌─────────────────────┐
             │   Route53        │        │  KJW-VPC-MGMT       │
-            │   kjw-cloud.site │        │  10.1.0.0/16        │
+            │  your-domain.com │        │  10.1.0.0/16        │
             │   (Hosted Zone)  │        │                     │
             └────────┬─────────┘        │  ┌───────────────┐  │
                      │ Alias A          │  │ OpenVPN EC2   │  │
                      ▼                  │  │ <openvpn_public_ip> │  │
             ┌──────────────────┐        │  │ (t2.micro)    │  │
             │   CloudFront     │        │  └───────┬───────┘  │
-            │ d3dcicuhayk6oh   │        └──────────┼──────────┘
+            │ <distribution-id>│        └──────────┼──────────┘
             │ .cloudfront.net  │                   │ VPC Peering
             │                  │                   │ KJW-PEERING-MGMT-MAIN
             │ /images/*  ──────┼──→ S3 (정적)      │
@@ -70,14 +70,14 @@
 ```
 [사용자 브라우저]
      │
-     │ https://kjw-cloud.site
+     │ https://your-domain.com
      ▼
-[Route53 — kjw-cloud.site Hosted Zone]
+[Route53 — your-domain.com Hosted Zone]
      │ Alias A 레코드 → CloudFront
      ▼
-[CloudFront — d3dcicuhayk6oh.cloudfront.net]
-     │ aliases: kjw-cloud.site, cdn.kjw-cloud.site
-     │ ACM 인증서: KJW-ACM-CF (us-east-1, *.kjw-cloud.site)
+[CloudFront — <distribution-id>.cloudfront.net]
+     │ aliases: your-domain.com, cdn.your-domain.com
+     │ ACM 인증서: KJW-ACM-CF (us-east-1, *.your-domain.com)
      │ PriceClass_100 (북미+유럽)
      │
      ├─── /images/*, /css/*, /js/* ──────────────────────────────────────────┐
@@ -284,13 +284,13 @@ Route53 Hosted Zone (zone_id)
     acm 모듈 (두 인증서 동시 관리)
           │
           ├─── KJW-ACM-ALB (us-east-2)
-          │    domain: kjw-cloud.site, *.kjw-cloud.site
+          │    domain: your-domain.com, *.your-domain.com
           │    DNS Validation 레코드 → Route53 (CNAME)
           │    aws_acm_certificate_validation (발급 완료 대기)
           │    └→ alb 모듈에 acm_arn_alb 전달
           │
           └─── KJW-ACM-CF (us-east-1, provider alias)
-               domain: kjw-cloud.site, *.kjw-cloud.site
+               domain: your-domain.com, *.your-domain.com
                DNS Validation 레코드 → Route53 (CNAME, allow_overwrite=true)
                aws_acm_certificate_validation (발급 완료 대기)
                └→ cloudfront 모듈에 acm_arn_cf 전달

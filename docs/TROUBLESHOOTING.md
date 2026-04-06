@@ -10,8 +10,8 @@
 **최종 해결:** AMI ID를 `terraform.tfvars`에 직접 하드코딩
 
 ```
-ami_id_ubuntu_24 = "ami-07062e2a343acc243"  # 콘솔 EC2 → AMIs → Public images에서 확인
-ami_id_ubuntu_22 = "ami-04a131f50a7b86648"
+ami_id_ubuntu_24 = "ami-xxxxxxxxxxxxxxxxx"  # 콘솔 EC2 → AMIs → Public images에서 확인
+ami_id_ubuntu_22 = "ami-xxxxxxxxxxxxxxxxx"
 ```
 
 ---
@@ -24,7 +24,7 @@ ami_id_ubuntu_22 = "ami-04a131f50a7b86648"
 
 ```bash
 # 올바른 방법
-source ~/terraform-lab/aws-mfa-main-guide1/aws-mfa.sh <OTP코드>
+source ~/terraform-lab/phase5/aws-mfa-main-guide1/aws-mfa.sh <OTP코드>
 terraform apply -auto-approve 2>&1 | tee ~/terraform-apply.log
 ```
 
