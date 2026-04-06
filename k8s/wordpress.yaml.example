@@ -1,0 +1,53 @@
+# ============================================================
+# wordpress.yaml.example
+# 이 파일을 복사해서 wordpress.yaml로 저장 후 값을 수정하세요.
+#   cp wordpress.yaml.example wordpress.yaml
+# wordpress.yaml은 .gitignore에 포함되어 있습니다 (DB 비밀번호 보호).
+#
+# 필수 수정 항목:
+#   WORDPRESS_DB_HOST  → terraform output aurora_writer_endpoint
+#   WORDPRESS_DB_PASSWORD → terraform.tfvars db_password 값
+# ============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: "<aurora_writer_endpoint>"     # terraform output aurora_writer_endpoint
+        - name: WORDPRESS_DB_USER
+          value: "admin"
+        - name: WORDPRESS_DB_PASSWORD
+          value: "<db_password>"                # terraform.tfvars db_password 값
+        - name: WORDPRESS_DB_NAME
+          value: "kjwdb"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress-svc
+  namespace: default
+spec:
+  type: NodePort        # ClusterIP 사용 금지 - 클러스터 외부 EC2에서 접근 불가
+  selector:
+    app: wordpress
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30080     # KJW-SG-EKS-NODE 및 EC2 Nginx 설정과 반드시 일치

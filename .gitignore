@@ -1,0 +1,33 @@
+# ─── Terraform 상태 및 캐시 ──────────────────────────────────────────────────
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfstate.lock.info
+.terraform.lock.hcl
+
+# ─── 민감 정보 (비밀번호, 키 포함) ───────────────────────────────────────────
+terraform.tfvars
+*.tfvars
+!*.tfvars.example
+
+# ─── Kubernetes 배포 파일 (DB 비밀번호 포함) ──────────────────────────────────
+wordpress.yaml
+!wordpress.yaml.example
+
+# ─── 로그 ────────────────────────────────────────────────────────────────────
+*.log
+
+# ─── MFA 스크립트 (계정 ID / MFA ARN 포함) ───────────────────────────────────
+aws-mfa-main-guide1/aws-mfa.sh
+aws-mfa-main-guide1/aws-mfa-clear.sh
+
+# ─── Claude Code 전용 (협업자 불필요) ────────────────────────────────────────
+CLAUDE.md
+memory/
+.claude/
+
+# ─── OS / 에디터 ──────────────────────────────────────────────────────────────
+.DS_Store
+.idea/
+.vscode/
+*.swp

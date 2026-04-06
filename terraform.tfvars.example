@@ -1,0 +1,48 @@
+# ============================================================
+# terraform.tfvars.example
+# 이 파일을 복사해서 terraform.tfvars로 저장 후 값을 수정하세요.
+#   cp terraform.tfvars.example terraform.tfvars
+# terraform.tfvars는 .gitignore에 포함되어 있습니다 (민감 정보 보호).
+# ============================================================
+
+# ─── 리전 / AZ ───────────────────────────────────────────────────────────────
+aws_region = "us-east-2"
+az_a       = "us-east-2a"
+az_c       = "us-east-2c"
+
+# ─── 프로젝트 공통 ────────────────────────────────────────────────────────────
+project_prefix = "KJW"                  # 리소스 이름 prefix
+domain_name    = "your-domain.com"      # 본인 도메인으로 변경
+key_name       = "YOUR-KEY-PAIR-NAME"   # EC2 Key Pair 이름
+
+common_tags = {
+  Project   = "KJW-Phase5"
+  ManagedBy = "Terraform"
+}
+
+# ─── VPC CIDR ────────────────────────────────────────────────────────────────
+main_vpc_cidr    = "10.0.0.0/16"
+mgmt_vpc_cidr    = "10.1.0.0/16"
+service_vpc_cidr = "10.2.0.0/16"
+
+# ─── 보안 그룹 ────────────────────────────────────────────────────────────────
+openvpn_client_cidr = "10.1.0.0/16"    # OpenVPN 클라이언트 IP 대역
+nginx_to_eks_port   = 30080
+
+# ─── Aurora DB ────────────────────────────────────────────────────────────────
+# 8자 이상, 영문+숫자 조합 권장
+db_password = "CHANGE_ME_BEFORE_APPLY"
+
+# ─── EC2 AMI ID ───────────────────────────────────────────────────────────────
+# ec2:DescribeImages 권한이 없는 경우 콘솔에서 직접 확인 후 입력
+# AWS Console → EC2 → AMIs → Public images → "ubuntu 24.04 us-east-2" 검색
+ami_id_ubuntu_24 = "ami-XXXXXXXXXXXXXXXXX"  # Ubuntu 24.04 LTS (ec2-web용)
+ami_id_ubuntu_22 = "ami-XXXXXXXXXXXXXXXXX"  # Ubuntu 22.04 LTS (openvpn용)
+
+# ─── EC2 Nginx reverse proxy ──────────────────────────────────────────────────
+# Step 1: 초기 apply 시 placeholder 유지 → /health: 200, /: 502 (정상)
+# Step 2: kubectl apply -f wordpress.yaml (NodePort 30080) 후
+#         kubectl get nodes -o wide → INTERNAL-IP 확인
+#         해당 IP로 값 변경 후 terraform apply -target=module.ec2_web
+eks_service_endpoint = "placeholder"    # worker node INTERNAL-IP로 교체 필요
+eks_nodeport         = 30080

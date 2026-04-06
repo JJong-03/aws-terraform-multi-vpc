@@ -1,0 +1,62 @@
+#!/bin/bash
+# ============================================================
+# aws-mfa.sh — AWS CLI MFA 임시토큰 자동 발급 스크립트
+# 사용법: source aws-mfa.sh <OTP_CODE> [duration_seconds]
+# ============================================================
+
+# ⚠️ 본인 MFA ARN으로 변경
+MFA_ARN="arn:aws:iam::<YOUR_ACCOUNT_ID>:mfa/<YOUR_MFA_DEVICE_NAME>"
+
+# 기본 세션 유지 시간: 12시간 (최대 36시간 = 129600초)
+DURATION="${2:-43200}"
+
+# OTP 코드 확인
+if [ -z "$1" ]; then
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "  AWS MFA 임시토큰 발급 스크립트"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo ""
+  echo "  사용법: source aws-mfa.sh <OTP코드> [유효시간(초)]"
+  echo "  예시:   source aws-mfa.sh 123456"
+  echo "          source aws-mfa.sh 123456 3600"
+  echo ""
+  echo "  세션해제: source aws-mfa-clear.sh"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  return 1 2>/dev/null || exit 1
+fi
+
+# 기존 임시토큰 제거 (원본 자격증명으로 STS 호출하기 위해)
+unset AWS_ACCESS_KEY_ID
+unset AWS_SECRET_ACCESS_KEY
+unset AWS_SESSION_TOKEN
+
+echo "🔐 MFA 인증 요청 중..."
+
+# STS 임시토큰 발급
+OUTPUT=$(aws sts get-session-token \
+  --serial-number "$MFA_ARN" \
+  --token-code "$1" \
+  --duration-seconds "$DURATION" \
+  --output json 2>&1)
+
+if [ $? -ne 0 ]; then
+  echo "❌ 토큰 발급 실패:"
+  echo "$OUTPUT"
+  return 1 2>/dev/null || exit 1
+fi
+
+# 환경변수 설정
+export AWS_ACCESS_KEY_ID=$(echo "$OUTPUT" | jq -r '.Credentials.AccessKeyId')
+export AWS_SECRET_ACCESS_KEY=$(echo "$OUTPUT" | jq -r '.Credentials.SecretAccessKey')
+export AWS_SESSION_TOKEN=$(echo "$OUTPUT" | jq -r '.Credentials.SessionToken')
+
+EXPIRY=$(echo "$OUTPUT" | jq -r '.Credentials.Expiration')
+
+echo ""
+echo "✅ MFA 인증 완료"
+echo "   만료 시각: $EXPIRY"
+echo "   유효 시간: $(($DURATION / 3600))시간"
+echo ""
+
+# 계정 정보 출력
+aws sts get-caller-identity --output table
