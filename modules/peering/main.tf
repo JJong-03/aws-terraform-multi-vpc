@@ -3,9 +3,9 @@
 # 요청 방향: MGMT → MAIN (requester = mgmt, accepter = main)
 
 resource "aws_vpc_peering_connection" "mgmt_to_main" {
-  vpc_id      = var.mgmt_vpc_id   # 요청 측 (Requester)
-  peer_vpc_id = var.main_vpc_id   # 수락 측 (Accepter)
-  auto_accept = true              # 동일 계정이므로 자동 수락
+  vpc_id      = var.mgmt_vpc_id # 요청 측 (Requester)
+  peer_vpc_id = var.main_vpc_id # 수락 측 (Accepter)
+  auto_accept = true            # 동일 계정이므로 자동 수락
 
   tags = {
     Name = "KJW-PEERING-MGMT-MAIN"

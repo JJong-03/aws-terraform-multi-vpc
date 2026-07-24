@@ -48,7 +48,7 @@ resource "aws_iam_role_policy_attachment" "node_cni" {
 }
 
 resource "aws_iam_role_policy_attachment" "node_ecr" {
-  role       = aws_iam_role.node.name
+  role = aws_iam_role.node.name
   # ECR에서 컨테이너 이미지 pull 허용 (ReadOnly)
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }

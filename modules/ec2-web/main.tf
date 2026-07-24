@@ -21,8 +21,8 @@ resource "aws_launch_template" "web" {
 
   # IMDSv2 강제 — 메타데이터 탈취(SSRF) 공격 방지
   metadata_options {
-    http_tokens                 = "required"  # IMDSv2 필수
-    http_put_response_hop_limit = 1           # 컨테이너 환경 아니면 1로 충분
+    http_tokens                 = "required" # IMDSv2 필수
+    http_put_response_hop_limit = 1          # 컨테이너 환경 아니면 1로 충분
   }
 
   # 루트 볼륨 암호화
@@ -74,8 +74,8 @@ resource "aws_autoscaling_group" "web" {
   # ALB Target Group에 ASG 인스턴스 자동 등록
   target_group_arns = [var.alb_tg_ec2_arn]
 
-  health_check_type         = "ELB"   # ALB Health Check 기준으로 인스턴스 교체
-  health_check_grace_period = 120     # 기동 후 120초 대기 (Nginx 시작 시간 확보)
+  health_check_type         = "ELB" # ALB Health Check 기준으로 인스턴스 교체
+  health_check_grace_period = 120   # 기동 후 120초 대기 (Nginx 시작 시간 확보)
 
   tag {
     key                 = "Name"

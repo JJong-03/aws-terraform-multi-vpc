@@ -78,8 +78,8 @@ resource "aws_cloudfront_distribution" "this" {
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
-    default_ttl            = 86400   # 1일
-    max_ttl                = 604800  # 7일
+    default_ttl            = 86400  # 1일
+    max_ttl                = 604800 # 7일
   }
 
   ordered_cache_behavior {
@@ -133,7 +133,7 @@ resource "aws_cloudfront_distribution" "this" {
 
     viewer_protocol_policy = "redirect-to-https"
     min_ttl                = 0
-    default_ttl            = 0    # 동적 콘텐츠는 캐싱 안 함
+    default_ttl            = 0 # 동적 콘텐츠는 캐싱 안 함
     max_ttl                = 0
   }
 

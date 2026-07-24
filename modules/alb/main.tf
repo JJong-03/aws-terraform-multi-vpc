@@ -2,7 +2,7 @@
 
 resource "aws_lb" "this" {
   name               = "KJW-ALB-PUBLIC"
-  internal           = false          # internet-facing
+  internal           = false # internet-facing
   load_balancer_type = "application"
   security_groups    = [var.sg_alb_id]
   subnets            = [var.subnet_public_a_id, var.subnet_public_c_id]

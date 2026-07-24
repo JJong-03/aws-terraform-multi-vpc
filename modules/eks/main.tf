@@ -6,8 +6,8 @@ resource "aws_eks_cluster" "this" {
   role_arn = aws_iam_role.cluster.arn
 
   vpc_config {
-    subnet_ids              = [var.subnet_app_a_id, var.subnet_app_c_id]
-    security_group_ids      = [var.sg_eks_node_id]
+    subnet_ids         = [var.subnet_app_a_id, var.subnet_app_c_id]
+    security_group_ids = [var.sg_eks_node_id]
 
     # Control Plane API 엔드포인트 접근 설정
     endpoint_private_access = true                        # VPC 내부에서 kubectl 접근 가능

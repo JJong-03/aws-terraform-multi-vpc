@@ -11,7 +11,7 @@ resource "aws_instance" "openvpn" {
   subnet_id                   = var.subnet_mgmt_public_id
   vpc_security_group_ids      = [var.sg_openvpn_id]
   key_name                    = var.key_name
-  associate_public_ip_address = true  # 관리자 VPN 진입점이므로 퍼블릭 IP 필수
+  associate_public_ip_address = true # 관리자 VPN 진입점이므로 퍼블릭 IP 필수
 
   # VPN 트래픽 포워딩을 위해 Source/Destination Check 비활성화
   # 비활성화하지 않으면 자신이 출발지/목적지가 아닌 패킷을 AWS가 드롭함
