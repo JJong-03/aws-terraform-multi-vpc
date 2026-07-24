@@ -3,7 +3,6 @@
 *.tfstate
 *.tfstate.backup
 *.tfstate.lock.info
-.terraform.lock.hcl
 
 # ─── 민감 정보 (비밀번호, 키 포함) ───────────────────────────────────────────
 terraform.tfvars

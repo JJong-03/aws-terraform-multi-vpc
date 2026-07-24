@@ -1,5 +1,7 @@
 # AWS Multi-VPC 3-Tier Infrastructure (Terraform)
 
+[![Terraform Checks](https://github.com/JJong-03/aws-terraform-multi-vpc/actions/workflows/terraform-checks.yml/badge.svg)](https://github.com/JJong-03/aws-terraform-multi-vpc/actions/workflows/terraform-checks.yml)
+
 <div align="center">
   <img src="https://img.shields.io/badge/Terraform-151515?style=for-the-badge&logo=terraform&logoColor=7B42BC" alt="Terraform" />
   <img src="https://img.shields.io/badge/AWS-151515?style=for-the-badge&logo=amazonwebservices&logoColor=FF9900" alt="AWS" />
@@ -28,6 +30,7 @@
 | 정적 경로 | CloudFront → S3 (OAC) |
 | 인프라 범위 | VPC, SG, ALB, ACM, Route53, CloudFront, WAF, EKS, ECS, Aurora, ECR, S3, OpenVPN |
 | 상태 관리 | Local backend (학습용) |
+| 자동 검증 | `terraform fmt -check`, `init -backend=false`, `validate`, TFLint |
 
 ---
 
