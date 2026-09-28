@@ -16,7 +16,7 @@
   <br/>
 </div>
 
-> **Terraform으로 설계·구축한 멀티 VPC 기반 3-Tier AWS 인프라 프로젝트입니다. <br/> 정적 요청은 CloudFront + S3로 분리하고, <br/>동적 요청은 WAF + ALB + EC2 Nginx + EKS + Aurora 경로로 처리하며,<br/> 관리자 접근은 별도 MGMT VPC의 OpenVPN 경로로 분리했습니다.**
+> **Terraform으로 설계하고 구축한 멀티 VPC 기반 3-Tier AWS 인프라 개인 PoC입니다. <br/> 정적 요청은 CloudFront + S3로 분리하고, <br/>동적 요청은 WAF + ALB + EC2 Nginx + EKS + Aurora 경로로 처리하며,<br/> 관리자 접근은 별도 MGMT VPC의 OpenVPN 경로로 분리했습니다.**
 
 ---
 
@@ -104,6 +104,18 @@ ECS Fargate
 | ACM 2개 리전 운용 | ALB는 us-east-2, CloudFront는 us-east-1 인증서가 필요하기 때문 |
 | `/health` 전용 경로 | EKS 준비 전에도 ALB health check가 안정적으로 통과하도록 하기 위해 |
 | CloudFront OAC + S3 Public Access Block | S3를 퍼블릭 오리진으로 열지 않고 CloudFront를 통해서만 접근하게 하기 위해 |
+
+---
+
+## 대표 문제 해결: EC2 Nginx에서 EKS로 가는 요청의 504
+
+Terraform으로 자원은 모두 생성됐지만, EC2 Nginx가 EKS로 보낸 요청이 504로 실패했습니다.
+
+1. **원인 1, 보안 그룹:** EKS 설정에 넣은 보안 그룹은 컨트롤 플레인에만 붙었습니다. 노드 템플릿(launch template)에 노드 보안 그룹을 연결했습니다.
+2. **원인 2, 호출 주소:** 그래도 실패했고, Nginx가 클러스터 안에서만 통하는 ClusterIP 주소로 요청하고 있었습니다. `kubectl get nodes -o wide`로 노드 내부 IP를 확인해 NodePort로 복구했습니다.
+3. **남긴 한계:** 노드 주소에 의존하는 방식이라 운영에서는 Ingress나 ALB로 바꿔야 합니다.
+
+자세한 과정은 [Troubleshooting](docs/TROUBLESHOOTING.md), 배포 뒤 8단계 점검은 [After Apply](docs/AFTER-APPLY.md)에 있습니다.
 
 ---
 
