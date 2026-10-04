@@ -117,8 +117,8 @@
                                                   │ /health → 항상 200 OK (ALB health check용)
                                                   │ / → proxy_pass http://<Worker Node IP>:30080
                                                   ▼
-                                                  [EKS NodePort Service :30080]   ← ✔ 실제 적용
-                                                  (ClusterIP 방식 ❌ — 클러스터 외부 EC2에서
+                                                  [EKS NodePort Service :30080]   ← 실제 적용
+                                                  (ClusterIP 방식은 쓰지 않음 — 클러스터 외부 EC2에서
                                                    172.20.x.x 라우팅 불가)
                                                   Kubernetes 1.31
                                                   KJW-EKS-CLUSTER
