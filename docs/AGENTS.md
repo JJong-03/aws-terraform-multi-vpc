@@ -41,7 +41,7 @@ USER → Route53 → CloudFront
                                                          ↓
                                                EC2 Nginx (ASG, proxy_pass)
                                                          ↓
-                                    Worker Node Private IP:30080 (NodePort) ✔
+                                    Worker Node Private IP:30080 (NodePort)
                                                          ↓
                                                WordPress Pod → Aurora MySQL
 ```
